@@ -29,3 +29,148 @@
     transform: translate(-50%, -50%);
   }
   
+  .app-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #000; /* Black background */
+  }
+  
+  .mentor-box {
+    background-color: #333; /* Dark grey background for the main box */
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 600px;
+  }
+  
+  .mentor-title {
+    color: #fff;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .chat-input {
+    width: 100%;
+    height: 100px;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    resize: none;
+  }
+  
+  .generate-button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .loader-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .loader {
+    border: 4px solid rgba(255, 255, 255, 0.2);
+    border-left-color: #fff;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  .answer-section,
+  .history-content {
+    margin-top: 20px;
+  }
+  
+  .history-title {
+    color: #fff;
+    margin-bottom: 10px;
+  }
+  
+  .history-content {
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  
+  .history-item {
+    background-color: #444;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: 5px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .action-buttons {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+  }
+  
+  .theme-switcher,
+  .copy-answer,
+  .clear-question,
+  .share-facebook,
+  .share-twitter,
+  .share-linkedin,
+  .share-whatsapp {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .theme-switcher {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .copy-answer {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .clear-question {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  .share-facebook {
+    background-color: #4267b2;
+    color: white;
+  }
+  
+  .share-twitter {
+    background-color: #1da1f2;
+    color: white;
+  }
+  
+  .share-linkedin {
+    background-color: #0077b5;
+    color: white;
+  }
+  
+  .share-whatsapp {
+    background-color: #25d366;
+    color: white;
+  }
+  
