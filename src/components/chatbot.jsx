@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import './chatbot.css';
 
 function ChatBot() {
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
-  const [isRoadmap, setIsRoadmap] = useState(false);
   const [loading, setLoading] = useState(false);
   const [chatHistory, setChatHistory] = useState([]);
   const [theme, setTheme] = useState('light');
@@ -54,14 +54,12 @@ function ChatBot() {
 
     if (!isQuestionAllowed) {
       setAnswer("Please ask a question related to coding, finance, or tech news.");
-      setIsRoadmap(false);
       return;
     }
 
     try {
       setAnswer("Generating...");
       setLoading(true);
-      setIsRoadmap(question.toLowerCase().includes("roadmap") || question.toLowerCase().includes("career"));
 
       const response = await axios({
         url: "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=AIzaSyBWSQ7Xs2Y3a7v2gqoRHXrLYMZ-Lg_gJlg",
@@ -81,7 +79,6 @@ function ChatBot() {
       console.error("Error generating content:", error);
       setAnswer("An error occurred while generating the content.");
       setLoading(false);
-      setIsRoadmap(false);
     }
   }
 
@@ -96,67 +93,46 @@ function ChatBot() {
     setChatHistory([]);
   };
 
-  function renderAnswer() {
-    if (isRoadmap) {
-      const steps = answer.split('\n').map((step, index) => (
-        <div key={index} className="bg-white shadow-lg rounded-lg p-6 mb-6 transform hover:-translate-y-1 transition-transform duration-150 ease-in-out">
-          <div className="flex items-center mb-2">
-            <div className="bg-blue-500 text-white rounded-full h-8 w-8 flex items-center justify-center mr-4">
-              {index + 1}
-            </div>
-            <h3 className="text-lg font-semibold">Step {index + 1}</h3>
-          </div>
-          <p className="text-gray-700">{step}</p>
-        </div>
-      ));
-      return <div className="space-y-4">{steps}</div>;
-    } else {
-      return <p className="bg-white p-6 rounded-lg shadow-lg text-gray-800">{answer}</p>;
-    }
-  }
-
   return (
-    <div className={`min-h-screen flex flex-col md:flex-row items-center justify-center ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'} p-4`}>
-      <div className="bg-gray-900 text-white p-8 rounded-lg shadow-2xl w-full max-w-4xl">
-        <h1 className="text-3xl font-bold mb-6 text-center">Mentoring AI</h1>
+    <div className={`chatbot-container ${theme}`}>
+      <div className="chatbot-box">
+        <h1 className="title">Mentoring AI</h1>
         
         <textarea
-          className="w-full p-4 mb-4 border border-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-800 text-white"
+          className="question-input"
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
           placeholder="Enter your question here"
           rows="4"
         />
         <button
-          className="w-full px-4 py-2 bg-black text-white border border-white rounded-lg hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="generate-button"
           onClick={generate}
         >
           Generate Answer
         </button>
         {loading && (
-          <div className="flex justify-center items-center mt-4">
-            <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-16 w-16 animate-spin"></div>
-          </div>
+          <div className="loading-spinner"></div>
         )}
-        <div className="mt-6 p-4 bg-gray-800 text-white rounded-lg shadow-inner max-w-4xl mx-auto">
-          {answer && renderAnswer()}
+        <div className="answer-box">
+          {answer && <pre className="answer-text">{answer}</pre>}
         </div>
-        <div className="mt-6">
-          <h2 className="text-xl font-bold mb-4 text-center">Chat History</h2>
-          <div className="max-h-64 overflow-y-auto space-y-4">
+        <div className="chat-history-container">
+          <h2 className="chat-history-title">Chat History</h2>
+          <div className="chat-history">
             {chatHistory.map((entry, index) => (
-              <div key={index} className="bg-gray-700 p-4 rounded-lg shadow-inner flex justify-between items-center">
+              <div key={index} className="chat-history-entry">
                 <div>
-                  <p><strong>Q:</strong> {entry.question}</p>
-                  <p><strong>A:</strong> {entry.answer}</p>
-                  <p className="text-sm text-gray-500">{entry.timestamp}</p>
+                  <p className="font-semibold"><strong>Q:</strong> {entry.question}</p>
+                  <p><strong>A:</strong> <pre className="whitespace-pre-wrap">{entry.answer}</pre></p>
+                  <p className="timestamp">{entry.timestamp}</p>
                 </div>
                 <button
-                  className="ml-4 p-1 bg-red-600 text-white rounded-full hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="delete-button"
                   onClick={() => setChatHistory(chatHistory.filter((_, i) => i !== index))}
                   aria-label="Delete this entry"
                 >
-                  <img src="https://img.icons8.com/ios-glyphs/30/ffffff/trash.png" alt="Delete"/>
+                  <img src="https://img.icons8.com/ios-glyphs/30/000000/trash.png" alt="Delete"/>
                 </button>
               </div>
             ))}
@@ -164,59 +140,59 @@ function ChatBot() {
           <input
             type="text"
             placeholder="Search chat history..."
-            className="w-full p-2 mt-4 border border-white rounded-md focus:outline-none focus:border-blue-500 bg-gray-800 text-white"
+            className="search-input"
             onChange={(e) => handleSearch(e.target.value)}
           />
           <button
-            className="w-full mt-4 px-4 py-2 bg-red-600 text-white border border-white rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+            className="clear-history-button"
             onClick={clearChatHistory}
           >
             Clear Chat History
           </button>
         </div>
-        <div className="flex justify-between mt-6 flex-wrap gap-2">
+        <div className="button-group">
           <button
-            className="px-4 py-2 bg-black text-white border border-white rounded-lg hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="theme-toggle-button"
             onClick={toggleTheme}
           >
             Switch Theme
           </button>
           <button
-            className="px-4 py-2 bg-black text-white border border-white rounded-lg hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="copy-button"
             onClick={() => copyToClipboard(answer)}
           >
             Copy Answer
           </button>
           <button
-            className="px-4 py-2 bg-black text-white border border-white rounded-lg hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="clear-question-button"
             onClick={() => setQuestion("")}
           >
             Clear Question
           </button>
-          <div className="flex gap-2">
+          <div className="flex space-x-2">
             <button
-              className="p-2 bg-black text-white border border-white rounded-full hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="social-button"
               onClick={shareOnFacebook}
             >
-              <img src="https://img.icons8.com/ios-filled/50/ffffff/facebook--v1.png" alt="Facebook" className="h-6 w-6"/>
+              <img src="https://img.icons8.com/ios-filled/50/ffffff/facebook--v1.png" alt="Facebook" className="w-5 h-5"/>
             </button>
             <button
-              className="p-2 bg-black text-white border border-white rounded-full hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="social-button"
               onClick={shareOnTwitter}
             >
-              <img src="https://img.icons8.com/ios-filled/50/ffffff/twitter--v1.png" alt="Twitter" className="h-6 w-6"/>
+              <img src="https://img.icons8.com/ios-filled/50/ffffff/twitter--v1.png" alt="Twitter" className="w-5 h-5"/>
             </button>
             <button
-              className="p-2 bg-black text-white border border-white rounded-full hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-700"
+              className="social-button"
               onClick={shareOnLinkedIn}
             >
-              <img src="https://img.icons8.com/ios-filled/50/ffffff/linkedin.png" alt="LinkedIn" className="h-6 w-6"/>
+              <img src="https://img.icons8.com/ios-filled/50/ffffff/linkedin.png" alt="LinkedIn" className="w-5 h-5"/>
             </button>
             <button
-              className="p-2 bg-black text-white border border-white rounded-full hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-green-600"
+              className="social-button"
               onClick={shareOnWhatsApp}
             >
-              <img src="https://img.icons8.com/ios-filled/50/ffffff/whatsapp--v1.png" alt="WhatsApp" className="h-6 w-6"/>
+              <img src="https://img.icons8.com/ios-filled/50/ffffff/whatsapp--v1.png" alt="WhatsApp" className="w-5 h-5"/>
             </button>
           </div>
         </div>

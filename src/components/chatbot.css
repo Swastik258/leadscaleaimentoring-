@@ -1,176 +1,279 @@
-.button-3d {
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.5s;
+.chatbot-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.chatbot-container.light {
+  background-color: #f7fafc;
+  color: #1a202c;
+}
+
+.chatbot-container.dark {
+  background-color: #1a202c;
+  color: #f7fafc;
+}
+
+.chatbot-box {
+  background-color: #000; /* Change the background color to black */
+
+  color: #f7fafc;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  max-width: 64rem;
+}
+
+.title {
+  font-size: 2.25rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.question-input {
+  width: 100%;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.375rem;
+  background-color: #2d3748;
+  color: #f7fafc;
+  outline: none;
+}
+
+.generate-button {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  background-color: #000;
+  color: #f7fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.375rem;
+  cursor: pointer;
+}
+
+.generate-button:hover {
+  background-color: #2d3748;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1rem;
+  width: 4rem;
+  height: 4rem;
+  border: 8px solid #e2e8f0;
+  border-top: 8px solid #1a202c;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
   }
-  
-  .button-3d:hover {
-    transform: rotateY(180deg);
+  100% {
+    transform: rotate(360deg);
   }
-  
-  .button-3d::before,
-  .button-3d::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 120%;
-    height: 120%;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    z-index: -1;
-  }
-  
-  .button-3d::before {
-    transform: translate(-50%, -50%) rotateY(90deg);
-  }
-  
-  .button-3d::after {
-    transform: translate(-50%, -50%);
-  }
-  
-  .app-container {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #000; /* Black background */
-  }
-  
-  .mentor-box {
-    background-color: #333; /* Dark grey background for the main box */
-    padding: 20px;
-    border-radius: 10px;
-    width: 80%;
-    max-width: 600px;
-  }
-  
-  .mentor-title {
-    color: #fff;
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .chat-input {
-    width: 100%;
-    height: 100px;
-    margin-bottom: 20px;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    resize: none;
-  }
-  
-  .generate-button {
-    width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .loader-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-  }
-  
-  .loader {
-    border: 4px solid rgba(255, 255, 255, 0.2);
-    border-left-color: #fff;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
-  }
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-  
-  .answer-section,
-  .history-content {
-    margin-top: 20px;
-  }
-  
-  .history-title {
-    color: #fff;
-    margin-bottom: 10px;
-  }
-  
-  .history-content {
-    max-height: 200px;
-    overflow-y: auto;
-  }
-  
-  .history-item {
-    background-color: #444;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-  }
-  
-  .search-input {
-    width: 100%;
-    padding: 5px;
-    margin-top: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  .action-buttons {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 20px;
-  }
-  
-  .theme-switcher,
-  .copy-answer,
-  .clear-question,
-  .share-facebook,
-  .share-twitter,
-  .share-linkedin,
-  .share-whatsapp {
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .theme-switcher {
-    background-color: #007bff;
-    color: white;
-  }
-  
-  .copy-answer {
-    background-color: #28a745;
-    color: white;
-  }
-  
-  .clear-question {
-    background-color: #dc3545;
-    color: white;
-  }
-  
-  .share-facebook {
-    background-color: #4267b2;
-    color: white;
-  }
-  
-  .share-twitter {
-    background-color: #1da1f2;
-    color: white;
-  }
-  
-  .share-linkedin {
-    background-color: #0077b5;
-    color: white;
-  }
-  
-  .share-whatsapp {
-    background-color: #25d366;
-    color: white;
-  }
-  
+}
+
+.answer-box {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background-color: #2d3748;
+  color: #f7fafc;
+  border-radius: 0.375rem;
+  box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+  max-width: 64rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.answer-text {
+  background-color: #ffffff;
+  color: #2d3748;
+  padding: 1.5rem;
+  border-radius: 0.375rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  line-height: 1.75;
+  font-size: 1rem;
+}
+
+.steps-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.roadmap-step {
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 0.375rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  color: #2d3748;
+  display: flex;
+  gap: 1rem;
+}
+
+.step-number {
+  background-color: #4299e1;
+  color: #fff;
+  border-radius: 50%;
+  height: 2rem;
+  width: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.step-text h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.chat-history-container {
+  margin-top: 1.5rem;
+}
+
+.chat-history-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.chat-history {
+  max-height: 16rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.chat-history-entry {
+  background-color: #4a5568;
+  padding: 1rem;
+  border-radius: 0.375rem;
+  box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.timestamp {
+  font-size: 0.875rem;
+  color: #a0aec0;
+}
+
+.delete-button {
+  background-color: #e53e3e;
+  color: #fff;
+  border-radius: 50%;
+  height: 2rem;
+  width: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: none;
+}
+
+.delete-button:hover {
+  background-color: #c53030;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.375rem;
+  background-color: #2d3748;
+  color: #f7fafc;
+  outline: none;
+}
+
+.clear-history-button {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  margin-top: 1rem;
+  background-color: #e53e3e;
+  color: #f7fafc;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+}
+
+.clear-history-button:hover {
+  background-color: #c53030;
+}
+
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.theme-toggle-button {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  background-color: #2d3748;
+  color: #f7fafc;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+}
+
+.theme-toggle-button:hover {
+  background-color: #4a5568;
+}
+
+.copy-button {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  background-color: #2d3748;
+  color: #f7fafc;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+}
+
+.copy-button:hover {
+  background-color: #4a5568;
+}
+
+.clear-question-button {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  background-color: #2d3748;
+  color: #f7fafc;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+}
+
+.clear-question-button:hover {
+  background-color: #4a5568;
+}
+
+.social-button {
+  background-color: #2d3748;
+  color: #f7fafc;
+  border: none;
+  border-radius: 0.375rem;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.social-button:hover {
+  background-color: #4a5568;
+}
