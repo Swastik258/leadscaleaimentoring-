@@ -1,7 +1,4 @@
-
-
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'tailwindcss/tailwind.css';
 
@@ -14,11 +11,29 @@ function ChatBot() {
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [points, setPoints] = useState(0);
   const [badges, setBadges] = useState([]);
+  const [dailyChallenge, setDailyChallenge] = useState("");
 
   const allowedCategories = [
     "programming", "coding", "development", "java", "python", "javascript", "finance", "stock", "crypto", "blockchain",
     "technology", "tech", "news", "updates", "roadmap", "career"
   ];
+
+  const dailyQuestions = [
+    "What is React?",
+    "Explain closures in JavaScript.",
+    "What is blockchain technology?",
+    "Describe the basics of machine learning.",
+    "What is the purpose of the 'useEffect' hook in React?"
+  ];
+
+  useEffect(() => {
+    changeDailyChallenge();
+  }, []);
+
+  const changeDailyChallenge = () => {
+    const randomIndex = Math.floor(Math.random() * dailyQuestions.length);
+    setDailyChallenge(dailyQuestions[randomIndex]);
+  };
 
   const toggleTheme = () => {
     setTheme(theme === 'light' ? 'dark' : 'light');
@@ -124,6 +139,7 @@ function ChatBot() {
       setAnswer(generatedText);
       setChatHistory([...chatHistory, { question, answer: generatedText, timestamp: new Date().toLocaleString() }]);
       setLoading(false);
+      setQuestion("");  // Clear the question input
       addPoints(20);  // Reward points for generating an answer
     } catch (error) {
       console.error("Error generating content:", error);
@@ -163,6 +179,14 @@ function ChatBot() {
                   <ul className="absolute left-0 mt-2 w-full bg-gray-700 rounded shadow-lg z-10">
                     <li className="py-2 px-4 hover:bg-gray-600 cursor-pointer">Settings</li>
                     <li className="py-2 px-4 hover:bg-gray-600 cursor-pointer">Logout</li>
+                    <li className="py-2 px-4">
+                      <div className="text-lg font-semibold mb-2 text-green-500">Your Points: {points}</div>
+                      <ul>
+                        {badges.map((badge, index) => (
+                          <li key={index} className="text-sm text-gray-400">{badge}</li>
+                        ))}
+                      </ul>
+                    </li>
                   </ul>
                 )}
               </li>
@@ -181,25 +205,62 @@ function ChatBot() {
                   onClick={() => copyToClipboard(answer)}
                 >
                   <img src="https://img.icons8.com/ios-filled/50/ffffff/copy.png" alt="Copy" className="w-6 h-6 mr-2" />
-                  Copy
+                  Copy Answer
                 </button>
               </li>
               <li className="mb-4 flex items-center">
                 <button
                   className="w-full text-left py-2 px-4 rounded bg-gray-700 hover:bg-gray-600 flex items-center"
-                  onClick={() => setQuestion("")}
+                  onClick={clearChatHistory}
                 >
-                  <img src="https://img.icons8.com/ios-filled/50/ffffff/clear-symbol.png" alt="Clear" className="w-6 h-6 mr-2" />
-                  Clear
+                  <img src="https://img.icons8.com/ios-filled/50/ffffff/delete-chat.png" alt="Clear History" className="w-6 h-6 mr-2" />
+                  Clear Input
                 </button>
               </li>
-              <li className="mb-4">
-                <input
-                  type="text"
-                  placeholder="Search chat history..."
-                  className="w-full p-2 rounded bg-gray-700 placeholder-gray-400"
-                  onChange={(e) => handleSearch(e.target.value)}
-                />
+              <li className="mb-4 flex items-center">
+                <button
+                  className="w-full text-left py-2 px-4 rounded bg-gray-700 hover:bg-gray-600 flex items-center"
+                  onClick={() => handleSearch(prompt('Enter search term:'))}
+                >
+                  <img src="https://img.icons8.com/ios-filled/50/ffffff/search.png" alt="Search" className="w-6 h-6 mr-2" />
+                  Search
+                </button>
+              </li>
+              <li className="mb-4 flex items-center">
+                <button
+                  className="w-full text-left py-2 px-4 rounded bg-gray-700 hover:bg-gray-600 flex items-center"
+                  onClick={shareOnFacebook}
+                >
+                  <img src="https://img.icons8.com/ios-filled/50/ffffff/facebook-new.png" alt="Share on Facebook" className="w-6 h-6 mr-2" />
+                  Share on Facebook
+                </button>
+              </li>
+              <li className="mb-4 flex items-center">
+                <button
+                  className="w-full text-left py-2 px-4 rounded bg-gray-700 hover:bg-gray-600 flex items-center"
+                  onClick={shareOnTwitter}
+                >
+                  <img src="https://img.icons8.com/ios-filled/50/ffffff/twitter.png" alt="Share on Twitter" className="w-6 h-6 mr-2" />
+                  Share on Twitter
+                </button>
+              </li>
+              <li className="mb-4 flex items-center">
+                <button
+                  className="w-full text-left py-2 px-4 rounded bg-gray-700 hover:bg-gray-600 flex items-center"
+                  onClick={shareOnLinkedIn}
+                >
+                  <img src="https://img.icons8.com/ios-filled/50/ffffff/linkedin.png" alt="Share on LinkedIn" className="w-6 h-6 mr-2" />
+                  Share on LinkedIn
+                </button>
+              </li>
+              <li className="mb-4 flex items-center">
+                <button
+                  className="w-full text-left py-2 px-4 rounded bg-gray-700 hover:bg-gray-600 flex items-center"
+                  onClick={shareOnWhatsApp}
+                >
+                  <img src="https://img.icons8.com/ios-filled/50/ffffff/whatsapp.png" alt="Share on WhatsApp" className="w-6 h-6 mr-2" />
+                  Share on WhatsApp
+                </button>
               </li>
               <li className="mb-4 flex items-center">
                 <button
@@ -212,118 +273,83 @@ function ChatBot() {
               </li>
               <li className="mb-4 flex items-center">
                 <button
-                  className="w-full text-left py-2 px-4 rounded bg-red-700 hover:bg-red-600 flex items-center"
-                  onClick={clearChatHistory}
-                >
-                  <img src="https://img.icons8.com/ios-glyphs/30/ffffff/trash.png" alt="Clear History" className="w-6 h-6 mr-2" />
-                  Clear History
-                </button>
-              </li>
-              <li className="mb-4 flex items-center">
-                <button
-                  className="w-full text-left py-2 px-4 rounded bg-green-700 hover:bg-green-600 flex items-center"
+                  className="w-full text-left py-2 px-4 rounded bg-gray-700 hover:bg-gray-600 flex items-center"
                   onClick={exportChatHistory}
                 >
-                  <img src="https://img.icons8.com/ios-filled/50/ffffff/export.png" alt="Export Chat" className="w-6 h-6 mr-2" />
-                  Export Chat
-                </button>
-              </li>
-              <li className="mb-4 flex items-center">
-                <button
-                  className="w-full text-left py-2 px-4 rounded bg-blue-600 hover:bg-blue-500 flex items-center"
-                  onClick={() => subscribeToUpdates('Facebook')}
-                >
-                  <img src="https://img.icons8.com/ios-filled/50/ffffff/facebook--v1.png" alt="Facebook" className="w-6 h-6 mr-2" />
-                  Get Facebook Updates
-                </button>
-              </li>
-              <li className="mb-4 flex items-center">
-                <button
-                  className="w-full text-left py-2 px-4 rounded bg-blue-400 hover:bg-blue-300 flex items-center"
-                  onClick={() => subscribeToUpdates('Twitter')}
-                >
-                  <img src="https://img.icons8.com/ios-filled/50/ffffff/twitter--v1.png" alt="Twitter" className="w-6 h-6 mr-2" />
-                  Get Twitter Updates
-                </button>
-              </li>
-              <li className="mb-4 flex items-center">
-                <button
-                  className="w-full text-left py-2 px-4 rounded bg-blue-700 hover:bg-blue-600 flex items-center"
-                  onClick={() => subscribeToUpdates('LinkedIn')}
-                >
-                  <img src="https://img.icons8.com/ios-filled/50/ffffff/linkedin.png" alt="LinkedIn" className="w-6 h-6 mr-2" />
-                  Get LinkedIn Updates
-                </button>
-              </li>
-              <li className="mb-4 flex items-center">
-                <button
-                  className="w-full text-left py-2 px-4 rounded bg-green-500 hover:bg-green-400 flex items-center"
-                  onClick={() => subscribeToUpdates('WhatsApp')}
-                >
-                  <img src="https://img.icons8.com/ios-filled/50/ffffff/whatsapp--v1.png" alt="WhatsApp" className="w-6 h-6 mr-2" />
-                  Get WhatsApp Updates
+                  <img src="https://img.icons8.com/ios-filled/50/ffffff/download.png" alt="Export History" className="w-6 h-6 mr-2" />
+                  Export Chat History
                 </button>
               </li>
             </ul>
           </nav>
         </div>
-        <div className="flex space-x-2">
-          <button onClick={shareOnFacebook} className="w-8 h-8 flex items-center justify-center bg-blue-600 hover:bg-blue-500 rounded">
-            <img src="https://img.icons8.com/ios-filled/50/ffffff/facebook--v1.png" alt="Facebook" className="w-5 h-5" />
-          </button>
-          <button onClick={shareOnTwitter} className="w-8 h-8 flex items-center justify-center bg-blue-400 hover:bg-blue-300 rounded">
-            <img src="https://img.icons8.com/ios-filled/50/ffffff/twitter--v1.png" alt="Twitter" className="w-5 h-5" />
-          </button>
-          <button onClick={shareOnLinkedIn} className="w-8 h-8 flex items-center justify-center bg-blue-700 hover:bg-blue-600 rounded">
-            <img src="https://img.icons8.com/ios-filled/50/ffffff/linkedin.png" alt="LinkedIn" className="w-5 h-5" />
-          </button>
-          <button onClick={shareOnWhatsApp} className="w-8 h-8 flex items-center justify-center bg-green-500 hover:bg-green-400 rounded">
-            <img src="https://img.icons8.com/ios-filled/50/ffffff/whatsapp--v1.png" alt="WhatsApp" className="w-5 h-5" />
-          </button>
+        <div className="mt-4">
+          <h2 className="text-lg font-semibold mb-2">Subscribe</h2>
+          <ul>
+            <li className="mb-2">
+              <button
+                className="w-full text-left py-2 px-4 rounded bg-blue-600 hover:bg-blue-500"
+                onClick={() => subscribeToUpdates('Email')}
+              >
+                Email Updates
+              </button>
+            </li>
+            <li className="mb-2">
+              <button
+                className="w-full text-left py-2 px-4 rounded bg-blue-600 hover:bg-blue-500"
+                onClick={() => subscribeToUpdates('SMS')}
+              >
+                SMS Updates
+              </button>
+            </li>
+          </ul>
         </div>
       </div>
-      <div className="w-4/5 p-8">
-        <div className="mb-6">
-          <textarea
-            className="w-full p-4 border rounded mb-4"
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-            placeholder="Enter your question here"
-            rows="4"
-          />
+      <div className="w-4/5 bg-white p-8 flex flex-col">
+        <h2 className="text-2xl font-semibold mb-6">Chat with our AI</h2>
+        <div className="mb-4">
+          <h3 className="text-lg font-semibold">Daily Challenge</h3>
+          <p className="mb-2">{dailyChallenge}</p>
           <button
-            className="py-2 px-4  bg-blue-600 text-white rounded hover:bg-blue-500"
-            onClick={generate}
+            className="py-1 px-2 rounded bg-blue-600 text-white hover:bg-blue-500"
+            onClick={changeDailyChallenge}
           >
-            Generate Answer
+            Change Question
           </button>
         </div>
-        {loading && (
-          <div className="loading-spinner">Loading...</div>
-        )}
-        <div className="answer-box mb-6">
-          {answer && <pre className="whitespace-pre-wrap bg-gray-200 p-4 rounded">{answer}</pre>}
+        <textarea
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
+          placeholder="Enter your question..."
+          className="mb-4 p-4 w-full h-40 border border-gray-300 rounded"
+        />
+        <button
+          onClick={generate}
+          className="mb-4 py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-500"
+        >
+          {loading ? 'Generating...' : 'Generate Answer'}
+        </button>
+        <div
+          className={`mb-4 p-4 w-full border border-gray-300 rounded ${loading ? 'bg-gray-100' : 'bg-gray-50'}`}
+        >
+          <h3 className="text-lg font-semibold">Answer</h3>
+          {loading ? (
+            <div className="loader"></div>
+          ) : (
+            <p>{answer}</p>
+          )}
         </div>
-        <div className="chat-history-container">
-          <h2 className="text-xl font-semibold mb-4">Chat History</h2>
-          <div className="chat-history">
+        <div>
+          <h3 className="text-lg font-semibold mb-2">Chat History</h3>
+          <ul>
             {chatHistory.map((entry, index) => (
-              <div key={index} className="chat-history-entry mb-4 p-4 bg-gray-200 rounded flex justify-between items-start">
-                <div>
-                  <p className="font-semibold"><strong>Q:</strong> {entry.question}</p>
-                  <p><strong>A:</strong> <pre className="whitespace-pre-wrap">{entry.answer}</pre></p>
-                  <p className="text-sm text-gray-500">{entry.timestamp}</p>
-                </div>
-                <button
-                  className="delete-button ml-4"
-                  onClick={() => setChatHistory(chatHistory.filter((_, i) => i !== index))}
-                  aria-label="Delete this entry"
-                >
-                  <img src="https://img.icons8.com/ios-glyphs/30/000000/trash.png" alt="Delete" />
-                </button>
-              </div>
+              <li key={index} className="mb-2">
+                <strong>Q:</strong> {entry.question}<br />
+                <strong>A:</strong> {entry.answer}<br />
+                <small className="text-gray-500">{entry.timestamp}</small>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       </div>
     </div>
@@ -331,6 +357,3 @@ function ChatBot() {
 }
 
 export default ChatBot;
-
-
-
